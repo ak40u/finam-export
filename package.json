@@ -1,0 +1,90 @@
+{
+  "name": "finam-export-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/src/main/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .",
+    "build": "tsc -p . && vite build && node scripts/copy-assets.js",
+    "start": "npm run build && electron .",
+    "dist": "npm run build && electron-builder -w"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.200",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.0",
+    "cross-env": "^10.1.0",
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.0.0",
+    "wait-on": "^9.0.3"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.0",
+    "@mui/material": "^5.15.0",
+    "@mui/x-date-pickers": "^6.18.0",
+    "axios": "^1.6.0",
+    "date-fns": "^2.30.0",
+    "dotenv": "^17.2.3",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "build": {
+    "appId": "com.finam.export.desktop",
+    "productName": "Finam Export Tool",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "!dist/**/*.map",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "FinamExport-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Finam Export Tool"
+    },
+    "portable": {
+      "artifactName": "FinamExport-Portable-${version}.exe"
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "category": "public.app-category.finance"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Office"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "your-github-username",
+      "repo": "finam-export"
+    }
+  }
+}
